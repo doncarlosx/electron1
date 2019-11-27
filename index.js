@@ -266,7 +266,7 @@ function rollforward(prediction, previous) {
 
     assert.ok(prediction.tick)
     if (prediction.fromServer) {
-        assert.ok(prediction.tick === game.tick + 1)
+        // assert.ok(prediction.tick === game.tick + 1)
     } else {
         if (previous === undefined) {
             prediction.tick = game.tick + 1
