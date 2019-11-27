@@ -327,6 +327,9 @@ function collapsePredictions() {
         game.nexttick()
     }
     predictions.splice(0, i)
+    if (predictions.length === 0) {
+        game.synced = true
+    }
 }
 
 window.addEventListener('keydown', keyDown, true)
