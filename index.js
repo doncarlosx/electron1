@@ -221,7 +221,7 @@ function handleVoid(message) {
     for (let i = 0; i < predictions.length; i++) {
         const prediction = predictions[i]
         if (prediction.tick === message.serverTick || prediction.id === message.predictionID) {
-            game.synced && rollbackTo(prediction.tick)
+            rollbackTo(prediction.tick)
         }
     }
     for (let i = 0; i < predictions.length; i++) {
@@ -231,6 +231,7 @@ function handleVoid(message) {
         }
     }
     game.synced && rollforwardTo(Infinity)
+    collapsePredictions()
 }
 
 const predictions = []
