@@ -74,6 +74,9 @@ connection.on('data', data => {
         if (message.command === Commands.Move) {
             return handleMove(message)
         }
+        if (message.command === Commands.Void) {
+            return handleVoid(message)
+        }
     }
 })
 
@@ -212,6 +215,22 @@ function handleMove(message) {
         game.synced && rollforwardTo(Infinity)
     }
     collapsePredictions()
+}
+
+function handleVoid(message) {
+    for (let i = 0; i < predictions.length; i++) {
+        const prediction = predictions[i]
+        if (prediction.tick === message.serverTick || prediction.id === message.predictionID) {
+            game.synced && rollbackTo(prediction.tick)
+        }
+    }
+    for (let i = 0; i < predictions.length; i++) {
+        const prediction = predictions[i]
+        if (prediction.id === message.predictionID) {
+            predictions.splice(i, 1)
+        }
+    }
+    game.synced && rollforwardTo(Infinity)
 }
 
 const predictions = []

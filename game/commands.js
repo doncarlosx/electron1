@@ -4,4 +4,5 @@ module.exports = class Commands {
     static NewPlayer = 1
     static Sync = 2
     static Move = 3
+    static Void = 4
 }

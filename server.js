@@ -106,7 +106,12 @@ function handleMove(sender, message) {
             connection.tick = game.tick
         }
     } else {
-
+        const payload = JSON.stringify({
+            command: Commands.Void,
+            predictionID: message.predictionID,
+            serverTick: game.tick,
+        })
+        sender.socket.write(`${payload}\n`, 'utf8')
     }
 }
 
