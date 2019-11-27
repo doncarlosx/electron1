@@ -1,0 +1,51 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+
+    "version": "0.2.0",
+
+    "configurations": [
+        
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "UI",
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+            "program": "${workspaceFolder}/electron.js",
+            "args": ["--debug"],
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Server",
+            "program": "${workspaceFolder}/server.js",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Scratch",
+            "program": "${workspaceFolder}/scratch/client-commands.js",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        }
+
+    ],
+
+    "compounds": [
+        {
+            "name": "UI/Server",
+            "configurations": ["UI", "Server"]
+        }
+    ]
+
+}

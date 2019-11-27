@@ -1,0 +1,16 @@
+{
+  "name": "electron1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^7.1.2",
+    "spectorjs": "^0.9.10"
+  }
+}
