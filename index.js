@@ -65,6 +65,7 @@ connection.on('connect', () => {
 connection.on('data', data => {
     const messages = protocol.read(data)
     for (let message of messages) {
+        console.log(`Server says tick=${message.serverTick} conn=${message.connectionID} player=${message.playerID} command=${message.command}, predictionID=${message.predictionID}`)
         if (message.command === Commands.NewPlayer) {
             return handleNewPlayer(message)
         }
