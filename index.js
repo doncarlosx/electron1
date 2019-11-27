@@ -54,7 +54,7 @@ function spriteRebuffer() {
 const game = new Game()
 const protocol = new Protocol()
 const commands = new Commands()
-const connection = net.connect(11111, 'localhost')
+const connection = net.connect(11111, '10.27.78.102')
 
 connection.on('connect', () => {
     const payload = JSON.stringify({ command: Commands.Sync })
