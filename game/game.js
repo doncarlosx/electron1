@@ -2,6 +2,7 @@ const Player = require('./player')
 
 module.exports = class Game {
     constructor() {
+        this.playerID = 0
         this.connectionID = 0
         this.tick = 0
         this.synced = false
@@ -35,10 +36,10 @@ module.exports = class Game {
                 }
             }
         }
+
         newPlayer.x = finalX
         newPlayer.y = finalY
-        const rollback = () => this.players.delete(newPlayer)
-        return [newPlayer, rollback]
+        return newPlayer
     }
 
     canMove(playerID, x, y) {
@@ -60,8 +61,15 @@ module.exports = class Game {
         return true
     }
 
+    getPlayer(playerID) {
+        for (let player of this.players) {
+            if (player.id === playerID) {
+                return player
+            }
+        }
+    }
+
     nexttick() {
-        this.tick += 1
-        return this.tick
+        return this.tick += 1
     }
 }

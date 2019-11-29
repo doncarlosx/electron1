@@ -27,35 +27,14 @@ function connectionHandler(socket) {
 function incomingData(connection, data) {
     const messages = protocol.read(data)
     for (let message of messages) {
-        if (message.command === Commands.NewPlayer) {
-            return handleNewPlayer(connection, message)
-        }
+        console.log(`Server hears serverTick=${game.tick} connection=${connection.id} player=${message.playerID} command=${message.command} prediction=${message.predictionID}`)
         if (message.command === Commands.Sync) {
             return handleSync(connection, message)
-        }
-        if (message.command === Commands.Move) {
+        } else if (message.command === Commands.NewPlayer) {
+            return handleNewPlayer(connection, message)
+        } else if (message.command === Commands.Move) {
             return handleMove(connection, message)
         }
-    }
-}
-
-function handleNewPlayer(sender, message) {
-    const [player, _] = game.addPlayer()
-    const tick = game.nexttick()
-    
-    const payload = JSON.stringify({
-        connectionID: sender.id,
-        serverTick: tick,
-        predictionID: message.predictionID,
-        command: message.command,
-        playerID: player.id,
-    })
-    
-    const response = `${payload}\n`
-    
-    for (let connection of connections) {
-        connection.socket.write(response, 'utf8')
-        connection.tick = tick
     }
 }
 
@@ -69,39 +48,58 @@ function handleSync(sender, message) {
         })
     }
     const payload = JSON.stringify({
-        connectionID: sender.id,
-        tick: game.tick,
-        players,
         command: message.command,
+        connectionID: sender.id,
+        serverTick: game.tick,
+        players,
     })
-
     const response =`${payload}\n`
-
+    console.log(`Server says ${payload}`)
     sender.socket.write(response, 'utf8')
     sender.tick = game.tick
 }
 
+function handleNewPlayer(sender, message) {
+    const player = game.addPlayer()
+    const tick = game.nexttick()
+    
+    const payload = JSON.stringify({
+        command: message.command,
+        playerID: player.id,
+        connectionID: sender.id,
+        serverTick: tick,
+        x: player.x,
+        y: player.y,
+    })
+    
+    const response = `${payload}\n`
+    for (let connection of connections) {
+        console.log(`Server says ${payload}`)
+        connection.socket.write(response, 'utf8')
+        connection.tick = tick
+    }
+}
+
 function handleMove(sender, message) {
-    if (game.canMove(message.playerID, message.x, message.y)) {
-        for (let player of game.players) {
-            if (player.id === message.playerID) {
-                player.x += message.x
-                player.y += message.y
-                break
-            }
-        }
+    const { command, playerID, x, y, predictionID } = message
+    
+    if (game.canMove(playerID, x, y)) {
+        const player = game.getPlayer(playerID)
+        player.x += x
+        player.y += y
         game.nexttick()
         const payload = JSON.stringify({
+            command,
+            predictionID,
+            playerID,
             connectionID: sender.id,
-            playerID: message.playerID,
+            serverTick: game.tick,
             x: message.x,
             y: message.y,
-            serverTick: game.tick,
-            predictionID: message.predictionID,
-            command: message.command,
         })
         const response = `${payload}\n`
         for (let connection of connections) {
+            console.log(`Server says ${payload}`)
             connection.socket.write(response, 'utf8')
             connection.tick = game.tick
         }
@@ -109,8 +107,11 @@ function handleMove(sender, message) {
         const payload = JSON.stringify({
             command: Commands.Void,
             predictionID: message.predictionID,
+            playerID: message.playerID,
+            connectionID: sender.id,
             serverTick: game.tick,
         })
+        console.log(`Server says ${payload}`)
         sender.socket.write(`${payload}\n`, 'utf8')
     }
 }
