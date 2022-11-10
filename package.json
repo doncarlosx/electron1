@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^7.1.2",
+    "electron": "^18.3.7",
     "spectorjs": "^0.9.10"
   }
 }
